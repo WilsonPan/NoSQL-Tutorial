@@ -75,3 +75,7 @@ db.setProfilingLevel(1)
 ## 参考文章
 [https://docs.mongodb.com/manual/reference/command/profile/](https://docs.mongodb.com/manual/reference/command/profile/)  
 [https://docs.mongodb.com/manual/tutorial/manage-the-database-profiler/#database-profiling-overhead](https://docs.mongodb.com/manual/tutorial/manage-the-database-profiler/#database-profiling-overhead)
+
+
+## GitHub
+[GitHub Link](https://github.com/WilsonPan/NoSQL-Tutorial/blob/master/MongoDB/Slowms.md)
