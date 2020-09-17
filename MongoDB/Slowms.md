@@ -1,6 +1,4 @@
-# 慢查询
-
-## 开启慢查询 && 获取慢查询语句
+## 开启慢查询 
 
 - 获取当前监控状态
 ```
@@ -62,14 +60,51 @@ db.system.profile.find({
 
 例如 : 创建一个4 MB大小的日志收集集合
 shell
-```
+```js
 db.setProfilingLevel(0)
 
 db.system.profile.drop()
 
-db.createCollection( "system.profile", { capped: true, size:4000000 } )
+db.createCollection( "system.profile", { capped: true, size: 1024 * 1024 * 4 } )
 
-db.setProfilingLevel(1)
+db.setProfilingLevel(1, 100)
+```
+
+## 监控技巧
+
+在测试/生产环境中，一个数据库可能会被多个应用使用，生成的慢查询都会记录在一起，若能清晰区分各自应用都慢查询，能准确区分到各自应用进行调优/调试
+
+在这里使用是appName区分各自应用，跟SQL Server的Application Name是一样道理。 
+
+假设现在我想监控我本地调试的所有Mongodb查询
+
+1. 写入所有查询
+
+```js
+db.setProfilingLevel(0)
+
+db.system.profile.drop()
+
+db.createCollection( "system.profile", { capped: true, size: 1024 * 1024 * 4 } )
+
+db.setProfilingLevel(2)
+```
+
+2. 修改连接字符串
+
+```js
+mongodb://<username>:<password>@127.0.0.1:27017/<database>?appName=wilson-debug
+```
+
+3. 执行对应代码
+
+4. 查询监控
+
+```js
+db.system.profile.find({ appName: 'wilson-debug' , ts: { $gt: new Date(ISODate().getTime() - 1000 * 60) } }) //一分钟内执行的语句
+                 .sort({ ts: 1})
+                 .limit(20)
+                 .pretty()
 ```
 
 ## 参考文章
